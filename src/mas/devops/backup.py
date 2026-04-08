@@ -246,6 +246,7 @@ def uploadToS3(
     endpoint_url=None,
     aws_access_key_id=None,
     aws_secret_access_key=None,
+    aws_session_token=None,
     region_name=None
 ) -> bool:
     """
@@ -258,6 +259,7 @@ def uploadToS3(
         endpoint_url: S3-compatible endpoint URL (e.g., for MinIO, Ceph)
         aws_access_key_id: AWS access key ID (if not using environment variables)
         aws_secret_access_key: AWS secret access key (if not using environment variables)
+        aws_session_token: Session token for temporary credentials (optional; also honors AWS_SESSION_TOKEN when using explicit keys)
         region_name: AWS region name (default: us-east-1)
 
     Returns:
@@ -284,6 +286,9 @@ def uploadToS3(
         if aws_access_key_id and aws_secret_access_key:
             s3_config['aws_access_key_id'] = aws_access_key_id
             s3_config['aws_secret_access_key'] = aws_secret_access_key
+            token = aws_session_token or os.environ.get('AWS_SESSION_TOKEN')
+            if token:
+                s3_config['aws_session_token'] = token
         if region_name:
             s3_config['region_name'] = region_name
         else:
@@ -325,6 +330,7 @@ def downloadFromS3(
     endpoint_url=None,
     aws_access_key_id=None,
     aws_secret_access_key=None,
+    aws_session_token=None,
     region_name=None
 ) -> bool:
     """
@@ -337,6 +343,7 @@ def downloadFromS3(
         endpoint_url: S3-compatible endpoint URL (e.g., for MinIO, Ceph)
         aws_access_key_id: AWS access key ID (if not using environment variables)
         aws_secret_access_key: AWS secret access key (if not using environment variables)
+        aws_session_token: Session token for temporary credentials (optional; also honors AWS_SESSION_TOKEN when using explicit keys)
         region_name: AWS region name (default: us-east-1)
 
     Returns:
@@ -367,6 +374,9 @@ def downloadFromS3(
         if aws_access_key_id and aws_secret_access_key:
             s3_config['aws_access_key_id'] = aws_access_key_id
             s3_config['aws_secret_access_key'] = aws_secret_access_key
+            token = aws_session_token or os.environ.get('AWS_SESSION_TOKEN')
+            if token:
+                s3_config['aws_session_token'] = token
         if region_name:
             s3_config['region_name'] = region_name
         else:
